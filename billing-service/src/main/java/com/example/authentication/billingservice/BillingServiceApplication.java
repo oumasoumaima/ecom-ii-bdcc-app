@@ -15,9 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -27,14 +25,20 @@ public class BillingServiceApplication {
         SpringApplication.run(BillingServiceApplication.class, args);
     }
     @Bean
-    CommandLineRunner commandLineRunner(BillRepository  billRepository,
+    CommandLineRunner commandLineRunner(BillRepository billRepository,
                                         ProductItemRepository productItemRepository,
                                         CustomerRestClient customerRestClient,
-                                        ProductRestClient productRestClient){
+                                        ProductRestClient productRestClient) {
 
         return args -> {
+            // Nettoyer les anciennes données
+            productItemRepository.deleteAll();
+            billRepository.deleteAll();
+
             Collection<Customer> customers = customerRestClient.getAllCustomers().getContent();
-            Collection<Product> products = productRestClient.getAllProducts().getContent();
+            List<Product> products = new ArrayList<>(productRestClient.getAllProducts().getContent());
+
+            Random random = new Random();
 
             customers.forEach(customer -> {
                 Bill bill = Bill.builder()
@@ -42,17 +46,26 @@ public class BillingServiceApplication {
                         .customerId(customer.getId())
                         .build();
                 billRepository.save(bill);
-                products.forEach(product -> {
-                    ProductItem productItem = ProductItem.builder()
-                            .bill(bill)
-                            .productId(product.getId())
-                            .quantity(1+new Random().nextInt(10))
-                            .unitPrice(product.getPrice())
-                            .build();
-                    productItemRepository.save(productItem);
-                });
+
+                // Sélectionner entre 2 et 4 produits
+                int numberOfProducts = 2 + random.nextInt(3);
+                Collections.shuffle(products);
+
+                products.stream()
+                        .limit(numberOfProducts)
+                        .forEach(product -> {
+                            ProductItem productItem = ProductItem.builder()
+                                    .bill(bill)
+                                    .productId(product.getId())
+                                    .quantity(1 + random.nextInt(10))
+                                    .unitPrice(product.getPrice())
+                                    .build();
+                            productItemRepository.save(productItem);
+                        });
+
+                System.out.println("✅ Bill for " + customer.getName() +
+                        " with " + numberOfProducts + " products");
             });
         };
     }
-
 }
