@@ -17,7 +17,7 @@ public class InventoryServiceApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner (ProductRepository productRepository) {
+    CommandLineRunner commandLineRunner(ProductRepository productRepository){
         return args -> {
             productRepository.save(Product.builder()
                     .id(UUID.randomUUID().toString())
@@ -28,18 +28,20 @@ public class InventoryServiceApplication {
             productRepository.save(Product.builder()
                     .id(UUID.randomUUID().toString())
                     .name("Printer")
-                    .price(1200)
+                    .price(1299)
                     .quantity(10)
                     .build());
             productRepository.save(Product.builder()
                     .id(UUID.randomUUID().toString())
-                    .name("Smart phone")
-                    .price(6000)
+                    .name("Smart Phone")
+                    .price(5400)
                     .quantity(8)
                     .build());
-            productRepository.findAll().forEach(p-> {
+
+            productRepository.findAll().forEach(p->{
                 System.out.println(p.toString());
             });
         };
     }
+
 }

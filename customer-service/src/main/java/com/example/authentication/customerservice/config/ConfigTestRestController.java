@@ -26,5 +26,4 @@ public class ConfigTestRestController {
     public CustomerConfigParams configTest2(){
         return customerConfigParams;
     }
-
 }
