@@ -17,5 +17,5 @@ public class Bill {
     private long customerId;
     @OneToMany(mappedBy = "bill")
     private List<ProductItem> productItems = new ArrayList<>();
-    @Transient private Customer customer;
+    @Transient private Customer customer; //récupère dynamiquement via Feign pas depuis la bd
 }

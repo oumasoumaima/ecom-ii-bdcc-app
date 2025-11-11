@@ -63,7 +63,7 @@ public class BillingServiceApplication {
                             productItemRepository.save(productItem);
                         });
 
-                System.out.println("✅ Bill for " + customer.getName() +
+                System.out.println("Bill for " + customer.getName() +
                         " with " + numberOfProducts + " products");
             });
         };

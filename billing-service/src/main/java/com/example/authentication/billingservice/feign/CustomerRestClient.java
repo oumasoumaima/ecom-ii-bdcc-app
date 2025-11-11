@@ -13,7 +13,7 @@ public interface CustomerRestClient {
     Customer getCustomerById(@PathVariable Long id);
 
     //Récuperer la liste des customers mais je vais pas faire List<Customers> car j'ai pas une liste
-    // Je vais recuperer ca avec hateos par : PageModel
+
     @GetMapping("/api/customers")
     PagedModel<Customer> getAllCustomers();
 }
